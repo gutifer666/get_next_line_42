@@ -4,10 +4,11 @@
 
 int	main(void)
 {
-	int fd;
-	char *line;
+	int		fd;
+	char	*line;
+
 	fd = open("tests/test1", O_RDONLY);
-	while (1)                           
+	while (1)
 	{
 		line = get_next_line(fd);
 		if (line == NULL)
