@@ -6,7 +6,7 @@
 /*   By: frgutier <frgutier@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 08:56:23 by frgutier          #+#    #+#             */
-/*   Updated: 2022/11/08 10:41:48 by frgutier         ###   ########.fr       */
+/*   Updated: 2022/11/09 10:21:44 by frgutier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	*ft_calloc(int count, int size)
 
 char	*ft_strjoin(char *accumulator, char *buffer, int n)
 {
-	char	*r;
+	char	*added;
 	int		len;
 	int		i;
 
@@ -49,18 +49,18 @@ char	*ft_strjoin(char *accumulator, char *buffer, int n)
 			return (NULL);
 	}
 	len = ft_strlen(accumulator) + n;
-	r = ft_calloc(len + 1, sizeof(char));
-	if (!r)
+	added = ft_calloc(len + 1, sizeof(char));
+	if (!added)
 	{
 		free (accumulator);
 		return (NULL);
 	}
 	i = -1;
 	while (accumulator[++i])
-		r[i] = accumulator [i];
+		added[i] = accumulator [i];
 	len = -1;
 	while (++len < n)
-		r[len + i] = buffer[len];
+		added[len + i] = buffer[len];
 	free (accumulator);
-	return (r);
+	return (added);
 }
