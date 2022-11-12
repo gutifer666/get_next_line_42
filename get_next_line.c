@@ -6,7 +6,7 @@
 /*   By: frgutier <frgutier@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 08:36:07 by frgutier          #+#    #+#             */
-/*   Updated: 2022/11/12 16:13:03 by frgutier         ###   ########.fr       */
+/*   Updated: 2022/11/12 16:24:08 by frgutier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 char	*clean_accumulator(char *accumulator)
 {
-	char	*new_accum;
+	char	*new_accumulator;
 	int		i;
 	size_t	len;
 
@@ -23,13 +23,13 @@ char	*clean_accumulator(char *accumulator)
 		i++;
 	if (accumulator[i] != '\0' && accumulator[i + 1] != '\0')
 	{
-		new_accum = (char *)malloc(ft_strlen(accumulator) - i);
-		if (new_accum == NULL)
+		new_accumulator = (char *)malloc(ft_strlen(accumulator) - i);
+		if (new_accumulator == NULL)
 			return (NULL);
 		len = ft_strlen(accumulator) - i - 1;
-		ft_strlcpy(new_accum, accumulator + i + 1, len);
+		ft_strlcpy(new_accumulator, accumulator + i + 1, len);
 		free (accumulator);
-		return (new_accum);
+		return (new_accumulator);
 	}
 	free (accumulator);
 	return (NULL);
