@@ -6,61 +6,75 @@
 /*   By: frgutier <frgutier@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 08:56:23 by frgutier          #+#    #+#             */
-/*   Updated: 2022/11/09 10:21:44 by frgutier         ###   ########.fr       */
+/*   Updated: 2022/11/12 11:38:52 by frgutier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-size_t	ft_strlen(char *s)
+size_t	ft_strlen(const char *s)
 {
-	size_t	i;
+	int	i;
 
+	if (!s)
+		return (1);
 	i = 0;
 	while (s[i])
 		i++;
 	return (i);
 }
 
-void	*ft_calloc(int count, int size)
+char	*ft_strchr(char *s, int c)
 {
-	char	*ptr;
-	int		i;
+	size_t	i;
 
-	ptr = malloc(count * size);
-	if (!ptr)
-		return (0);
+	if (!s)
+		return (NULL);
 	i = 0;
-	while (i < count * size)
-		ptr[i++] = 0;
-	return (ptr);
+	while (i <= ft_strlen(s))
+	{
+		if (s[i] == (char)c)
+			return ((char *)&s[i]);
+		i++;
+	}
+	return (NULL);
 }
 
-char	*ft_strjoin(char *accumulator, char *buffer, int n)
+void	copy(char *dst, char *src, size_t len)
 {
-	char	*added;
-	int		len;
-	int		i;
+	size_t	i;
 
-	if (!accumulator)
+	i = 0;
+	while (i < len)
 	{
-		accumulator = ft_calloc(1, 1);
-		if (!accumulator)
+		dst[i] = src[i];
+		i++;
+	}
+	dst[i] = '\0';
+}
+
+char	*add_to_accumulator(char *accumulator, char *buff)
+{
+	size_t	size;
+	size_t	size_accumulator;
+	size_t	size_buff;
+	char	*new_accumulator;
+
+	if (accumulator == NULL)
+	{
+		accumulator = (char *)malloc(1);
+		if (accumulator == NULL)
 			return (NULL);
+		*accumulator = '\0';
 	}
-	len = ft_strlen(accumulator) + n;
-	added = ft_calloc(len + 1, sizeof(char));
-	if (!added)
-	{
-		free (accumulator);
+	size_accumulator = ft_strlen(accumulator);
+	size_buff = ft_strlen(buff);
+	size = size_accumulator + size_buff;
+	new_accumulator = (char *)malloc(size + 1);
+	if (new_accumulator == NULL)
 		return (NULL);
-	}
-	i = -1;
-	while (accumulator[++i])
-		added[i] = accumulator [i];
-	len = -1;
-	while (++len < n)
-		added[len + i] = buffer[len];
+	copy(new_accumulator, accumulator, size_accumulator);
+	copy(new_accumulator + size_accumulator, buff, size_buff);
 	free (accumulator);
-	return (added);
+	return (new_accumulator);
 }

@@ -6,116 +6,91 @@
 /*   By: frgutier <frgutier@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 08:36:07 by frgutier          #+#    #+#             */
-/*   Updated: 2022/11/09 10:21:31 by frgutier         ###   ########.fr       */
+/*   Updated: 2022/11/12 11:47:57 by frgutier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int	is_included_new_line(char *accumulator, int bytes_read)
+char	*clean_accumulator(char *accumulator)
 {
-	int	i;
-
-	if (bytes_read < BUFFER_SIZE)
-		return (1);
-	i = 0;
-	if (!accumulator)
-		return (0);
-	while (accumulator[i])
-	{
-		if (accumulator[i] == '\n')
-			return (1);
-		i++;
-	}
-	return (0);
-}
-
-int	length_line_before_nl(char *accumulator)
-{
-	int	i;
+	char	*new_accum;
+	int		i;
 
 	i = 0;
-	while (accumulator[i])
-	{
-		if (accumulator[i] == '\n')
-			return (i + 1);
+	while (accumulator[i] != '\n' && accumulator[i])
 		i++;
+	if (accumulator[i] != '\0' && accumulator[i + 1] != '\0')
+	{
+		new_accum = (char *)malloc(ft_strlen(accumulator) - i);
+		if (new_accum == NULL)
+			return (NULL);
+		copy(new_accum, accumulator + i + 1, ft_strlen(accumulator) - i - 1);
+		free (accumulator);
+		return (new_accum);
 	}
-	return (ft_strlen (accumulator));
+	free (accumulator);
+	return (NULL);
 }
 
 char	*extract_line(char *accumulator)
 {
 	int		i;
-	int		size_line;
 	char	*line;
 
-	size_line = length_line_before_nl(accumulator);
-	line = ft_calloc(size_line + 1, sizeof(char));
-	if (!line)
-		return (NULL);
-	line[size_line] = '\0';
 	i = 0;
-	while (i < size_line)
-	{
-		line[i] = accumulator[i];
+	while (accumulator[i] != '\n' && accumulator[i])
 		i++;
-	}
+	if (!accumulator[i])
+		line = (char *)malloc(i + 1);
+	else
+		line = (char *)malloc(i + 2);
+	if (line == NULL)
+		return (NULL);
+	if (!accumulator[i])
+		copy(line, accumulator, i);
+	else
+		copy(line, accumulator, i + 1);
 	return (line);
 }
 
-char	*clean_accumulator(char *accumulator)
+char	*read_file(int fd, char *accumulator)
 {
-	int		i;
-	int		size_line;
-	char	*line;
+	char	*buff;
+	ssize_t	bytes_read;
 
-	size_line = ft_strlen(accumulator) - length_line_before_nl(accumulator);
-	if (size_line == 0)
-	{
-		free (accumulator);
+	buff = (char *)malloc(BUFFER_SIZE + 1);
+	if (buff == NULL)
 		return (NULL);
-	}
-	line = ft_calloc(size_line + 1, sizeof(char));
-	if (!line)
+	bytes_read = 1;
+	while (!ft_strchr(&accumulator[ft_strlen(accumulator) - bytes_read], '\n')
+		&& bytes_read)
 	{
-		free (accumulator);
-		return (NULL);
+		bytes_read = read(fd, buff, BUFFER_SIZE);
+		if ((bytes_read == 0 && accumulator == NULL) || bytes_read < 0)
+		{
+			if (accumulator)
+				free (accumulator);
+			free (buff);
+			return (NULL);
+		}
+		buff[bytes_read] = '\0';
+		accumulator = add_to_accumulator(accumulator, buff);
 	}
-	i = 0;
-	while (i < size_line)
-	{
-		line[i] = accumulator[length_line_before_nl(accumulator) + i];
-		i++;
-	}
-	free(accumulator);
-	return (line);
+	free (buff);
+	return (accumulator);
 }
 
 char	*get_next_line(int fd)
 {
-	static char		*accumulator;
-	char			buffer[BUFFER_SIZE + 1];
-	char			*line;
-	int				bytes_read;
+	static char	*accumulator;
+	char		*line;
 
-	line = NULL;
-	bytes_read = BUFFER_SIZE;
-	buffer[bytes_read] = '\0';
-	while (!is_included_new_line(accumulator, bytes_read))
-	{
-		bytes_read = read(fd, buffer, BUFFER_SIZE);
-		if (bytes_read == -1)
-			return (NULL);
-		if (bytes_read == 0 && !accumulator)
-		{
-			free (accumulator);
-			if (line)
-				free (line);
-			return (NULL);
-		}
-		accumulator = ft_strjoin(accumulator, buffer, bytes_read);
-	}
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	accumulator = read_file(fd, accumulator);
+	if (accumulator == NULL)
+		return (NULL);
 	line = extract_line(accumulator);
 	accumulator = clean_accumulator(accumulator);
 	return (line);
