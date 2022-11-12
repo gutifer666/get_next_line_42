@@ -6,7 +6,7 @@
 /*   By: frgutier <frgutier@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 08:56:23 by frgutier          #+#    #+#             */
-/*   Updated: 2022/11/12 11:38:52 by frgutier         ###   ########.fr       */
+/*   Updated: 2022/11/12 16:19:42 by frgutier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,17 +40,20 @@ char	*ft_strchr(char *s, int c)
 	return (NULL);
 }
 
-void	copy(char *dst, char *src, size_t len)
+size_t	ft_strlcpy(char *dst, char *src, size_t size)
 {
 	size_t	i;
 
 	i = 0;
-	while (i < len)
+	if (size == 0)
+		return (ft_strlen(src));
+	while (i < size)
 	{
 		dst[i] = src[i];
 		i++;
 	}
 	dst[i] = '\0';
+	return (ft_strlen(src));
 }
 
 char	*add_to_accumulator(char *accumulator, char *buff)
@@ -73,8 +76,8 @@ char	*add_to_accumulator(char *accumulator, char *buff)
 	new_accumulator = (char *)malloc(size + 1);
 	if (new_accumulator == NULL)
 		return (NULL);
-	copy(new_accumulator, accumulator, size_accumulator);
-	copy(new_accumulator + size_accumulator, buff, size_buff);
+	ft_strlcpy(new_accumulator, accumulator, size_accumulator);
+	ft_strlcpy(new_accumulator + size_accumulator, buff, size_buff);
 	free (accumulator);
 	return (new_accumulator);
 }

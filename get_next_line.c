@@ -6,7 +6,7 @@
 /*   By: frgutier <frgutier@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 08:36:07 by frgutier          #+#    #+#             */
-/*   Updated: 2022/11/12 11:47:57 by frgutier         ###   ########.fr       */
+/*   Updated: 2022/11/12 16:13:03 by frgutier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ char	*clean_accumulator(char *accumulator)
 {
 	char	*new_accum;
 	int		i;
+	size_t	len;
 
 	i = 0;
 	while (accumulator[i] != '\n' && accumulator[i])
@@ -25,7 +26,8 @@ char	*clean_accumulator(char *accumulator)
 		new_accum = (char *)malloc(ft_strlen(accumulator) - i);
 		if (new_accum == NULL)
 			return (NULL);
-		copy(new_accum, accumulator + i + 1, ft_strlen(accumulator) - i - 1);
+		len = ft_strlen(accumulator) - i - 1;
+		ft_strlcpy(new_accum, accumulator + i + 1, len);
 		free (accumulator);
 		return (new_accum);
 	}
@@ -48,9 +50,9 @@ char	*extract_line(char *accumulator)
 	if (line == NULL)
 		return (NULL);
 	if (!accumulator[i])
-		copy(line, accumulator, i);
+		ft_strlcpy(line, accumulator, i);
 	else
-		copy(line, accumulator, i + 1);
+		ft_strlcpy(line, accumulator, i + 1);
 	return (line);
 }
 
