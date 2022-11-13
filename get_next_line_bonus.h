@@ -1,32 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   get_next_line _bonus.h                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: frgutier <frgutier@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/13 08:55:44 by frgutier          #+#    #+#             */
-/*   Updated: 2022/11/13 08:55:45 by frgutier         ###   ########.fr       */
+/*   Created: 2022/11/05 08:26:52 by frgutier          #+#    #+#             */
+/*   Updated: 2022/11/13 08:48:08 by frgutier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
-#include <fcntl.h>
-#include <stdio.h>
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
 
-int	main(void)
-{
-	int		fd;
-	char	*line;
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE	4096
+# endif
 
-	fd = open("tests/test1", O_RDONLY);
-	while (1)
-	{
-		line = get_next_line(fd);
-		if (line == NULL)
-			break ;
-		printf("%s", line);
-		free(line);
-	}
-	return (0);
-}
+# include <unistd.h>
+# include <stdlib.h>
+
+char	*get_next_line(int fd);
+char	*add_to_accumulator(char *accumulator, char *buff);
+char	*ft_strchr(char *s, int c);
+size_t	ft_strlen(const char *s);
+size_t	ft_strlcpy(char *dst, char *src, size_t size);
+#endif

@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: frgutier <frgutier@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 08:36:07 by frgutier          #+#    #+#             */
-/*   Updated: 2022/11/12 19:34:32 by frgutier         ###   ########.fr       */
+/*   Updated: 2022/11/13 08:51:13 by frgutier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*clean_accumulator(char *accumulator)
 {
@@ -85,15 +85,15 @@ char	*read_file(int fd, char *accumulator)
 
 char	*get_next_line(int fd)
 {
-	static char	*accumulator;
+	static char	*accumulator[4096];
 	char		*line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || fd > 4096)
 		return (NULL);
-	accumulator = read_file(fd, accumulator);
-	if (accumulator == NULL)
+	accumulator[fd] = read_file(fd, accumulator[fd]);
+	if (accumulator[fd] == NULL)
 		return (NULL);
-	line = extract_line(accumulator);
-	accumulator = clean_accumulator(accumulator);
+	line = extract_line(accumulator[fd]);
+	accumulator[fd] = clean_accumulator(accumulator[fd]);
 	return (line);
 }
